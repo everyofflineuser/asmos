@@ -1,0 +1,24 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Build
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: [NASM] Building Assembler code
+        run: nasm -f elf32 kernel.asm -o kasm.o
+      - name: [GCC] Building CLANG code
+        run: gcc -m32 -c kernel.c -o kc.o
+      - name: [LD] Mixing assembler and CLANG code
+        run: ld -m elf_i386 -T link.ld -o kernel kasm.o kc.o
