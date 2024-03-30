@@ -1,4 +1,6 @@
 name: Билд ОС
+on:
+  push:
 jobs:
   build-test:
     name: Build
