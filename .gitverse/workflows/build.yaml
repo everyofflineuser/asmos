@@ -3,7 +3,7 @@ on:
   push:
 jobs:
   build-test:
-    name: Test context
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: [NASM] Building Assembler code
