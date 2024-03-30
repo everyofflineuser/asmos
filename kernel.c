@@ -25,6 +25,10 @@ unsigned int current_loc = 0;
 /* video memory begins at address 0xb8000 */
 char *vidptr = (char*)0xb8000;
 
+#define INPUT_SIZE 128
+char input[INPUT_SIZE] = {0};
+unsigned int input_index = 0;
+
 struct IDT_entry {
 	unsigned short int offset_lowerbits;
 	unsigned short int selector;
@@ -119,40 +123,55 @@ void clear_screen(void)
 	}
 }
 
-void keyboard_handler_main(void)
-{
-	unsigned char status;
-	char keycode;
+void keyboard_handler_main(void) {
+    unsigned char status;
+    char keycode;
 
-	/* write EOI */
-	write_port(0x20, 0x20);
+    /* write EOI */
+    write_port(0x20, 0x20);
 
-	status = read_port(KEYBOARD_STATUS_PORT);
-	/* Lowest bit of status will be set if buffer is not empty */
-	if (status & 0x01) {
-		keycode = read_port(KEYBOARD_DATA_PORT);
-		if(keycode < 0)
-			return;
+    status = read_port(KEYBOARD_STATUS_PORT);
+    if (status & 0x01) {
+        keycode = read_port(KEYBOARD_DATA_PORT);
+        if (keycode < 0)
+            return;
 
-		if(keycode == ENTER_KEY_CODE) {
-			kprint_newline();
-			return;
-		}
+        if (keycode == ENTER_KEY_CODE) {
+            kprint_newline();
+            execute(input);
+            for (unsigned int i = 0; i < input_index; ++i) {
+                vidptr[current_loc++] = input[i];
+                vidptr[current_loc++] = 0x07;
+            }
+            return;
+        }
 
-		vidptr[current_loc++] = keyboard_map[(unsigned char) keycode];
-		vidptr[current_loc++] = 0x07;
-	}
+        if (input_index < INPUT_SIZE - 1) {
+            input[input_index++] = keyboard_map[(unsigned char)keycode];
+            vidptr[current_loc++] = keyboard_map[(unsigned char)keycode];
+            vidptr[current_loc++] = 0x07;
+        }
+    }
+}
+
+void execute(char *input) {
+    if (input[0] == 't' && input[1] == 'e' && input[2] == 's' && input[3] == 't' && input[4] == '\0') {
+        kprint("Hello World!");
+        kprint_newline();
+    }
+    input_index = 0;
+    input[0] = '\0';
 }
 
 void kmain(void)
 {
-	const char *str = "Welcome to ASMOS, Type any text!";
-	clear_screen();
-	kprint(str);
-	kprint_newline();
+    const char *str = "Welcome to ASMOS, Type any text!";
+    clear_screen();
+    kprint(str);
+    kprint_newline();
 
-	idt_init();
-	kb_init();
+    idt_init();
+    kb_init();
 
-	while(1);
+    while (1);
 }
