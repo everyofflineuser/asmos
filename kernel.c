@@ -123,6 +123,13 @@ void clear_screen(void)
 	}
 }
 
+void clear_input(char *input) {
+    for (int i = 0; i < INPUT_SIZE; i++) {
+        input[i] = '\0';
+    }
+    input_index = 0;
+}
+
 void keyboard_handler_main(void) {
     unsigned char status;
     char keycode;
@@ -155,12 +162,11 @@ void keyboard_handler_main(void) {
 }
 
 void execute(char *input) {
-    if (input[0] == 't' && input[1] == 'e' && input[2] == 's' && input[3] == 't' && input[4] == '\0') {
-        kprint("Hello World!");
+    if (input[0] == 'k' && input[1] == 'e' && input[2] == 'r' && input[3] == 'n' && input[4] == 'e' && input[5] == 'l' && input[6] == '\0') {
+        kprint("ASMOS KERNEL v0.0.1");
         kprint_newline();
     }
-    input_index = 0;
-    input[0] = '\0';
+    clear_input(input);
 }
 
 void kmain(void)
