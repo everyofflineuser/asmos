@@ -146,10 +146,9 @@ void keyboard_handler_main(void)
 
 void kmain(void)
 {
-	const char *str = "my first kernel with keyboard support";
+	const char *str = "Welcome to ASMOS, Type any text!";
 	clear_screen();
 	kprint(str);
-	kprint_newline();
 	kprint_newline();
 
 	idt_init();
