@@ -104,7 +104,7 @@ void kprint(const char *str)
 	unsigned int i = 0;
 	while (str[i] != '\0') {
 		vidptr[current_loc++] = str[i++];
-		vidptr[current_loc++] = 0x07;
+		vidptr[current_loc++] = 0b00000000;
 	}
 }
 
@@ -119,7 +119,7 @@ void clear_screen(void)
 	unsigned int i = 0;
 	while (i < SCREENSIZE) {
 		vidptr[i++] = ' ';
-		vidptr[i++] = 0x07;
+		vidptr[i++] = 0b00000000;
 	}
 }
 
@@ -148,7 +148,7 @@ void keyboard_handler_main(void) {
             execute(input);
             for (unsigned int i = 0; i < input_index; ++i) {
                 vidptr[current_loc++] = input[i];
-                vidptr[current_loc++] = 0x07;
+                vidptr[current_loc++] = 0b00000000;
             }
             return;
         }
@@ -156,7 +156,7 @@ void keyboard_handler_main(void) {
         if (input_index < INPUT_SIZE - 1) {
             input[input_index++] = keyboard_map[(unsigned char)keycode];
             vidptr[current_loc++] = keyboard_map[(unsigned char)keycode];
-            vidptr[current_loc++] = 0x07;
+            vidptr[current_loc++] = 0b00000000;
         }
     }
 }
