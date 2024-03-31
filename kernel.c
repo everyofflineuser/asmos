@@ -104,7 +104,7 @@ void kprint(const char *str)
 	unsigned int i = 0;
 	while (str[i] != '\0') {
 		vidptr[current_loc++] = str[i++];
-		vidptr[current_loc++] = 0b00000000;
+		vidptr[current_loc++] = 0b00001111;
 	}
 }
 
@@ -119,7 +119,7 @@ void clear_screen(void)
 	unsigned int i = 0;
 	while (i < SCREENSIZE) {
 		vidptr[i++] = ' ';
-		vidptr[i++] = 0b00000000;
+		vidptr[i++] = 0b00001111;
 	}
 }
 
@@ -148,7 +148,7 @@ void keyboard_handler_main(void) {
             execute(input);
             for (unsigned int i = 0; i < input_index; ++i) {
                 vidptr[current_loc++] = input[i];
-                vidptr[current_loc++] = 0b00000000; // BG (first 4 bytes): BRGB(https://contrapunctus.net/rgb-demo/4bit.html) last 4 bytes (BRGB TEXT COLOR)
+                vidptr[current_loc++] = 0b00001111; // BG (first 4 bytes): BRGB(https://contrapunctus.net/rgb-demo/4bit.html) last 4 bytes (BRGB TEXT COLOR)
             }
             return;
         }
@@ -156,7 +156,7 @@ void keyboard_handler_main(void) {
         if (input_index < INPUT_SIZE - 1) {
             input[input_index++] = keyboard_map[(unsigned char)keycode];
             vidptr[current_loc++] = keyboard_map[(unsigned char)keycode];
-            vidptr[current_loc++] = 0b00000000;
+            vidptr[current_loc++] = 0b00001111;
         }
     }
 }
